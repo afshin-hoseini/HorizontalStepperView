@@ -61,6 +61,6 @@ public class SampleActivity extends AppCompatActivity {
 
         titledHorizontalStepper.previousStep();
         ViewPager viewPager = null;
-        
+
     }
 }
