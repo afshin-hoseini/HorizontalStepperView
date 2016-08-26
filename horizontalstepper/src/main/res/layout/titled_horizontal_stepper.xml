@@ -4,34 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-
-
-
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:id="@+id/titleFrame"
-        android:layout_alignParentTop="true"
-        android:background="#EEEEEE">
+        android:layout_alignParentTop="true">
 
         <TextView
             android:id="@+id/stepTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:textColor="@color/selectedColor"
             android:textSize="13dp"
-            android:text="The title"/>
+            android:text="The title"
+            android:visibility="invisible"
+            android:paddingTop="6dp"/>
 
     </FrameLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/titleFrame"
-        android:background="#fafafa"
-        android:layout_alignBottom="@+id/horizontalStepper"/>
 
     <ir.afshin.horizontalstepper.HorizontalStepper
         android:layout_width="match_parent"

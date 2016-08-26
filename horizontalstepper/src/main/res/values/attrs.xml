@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="hs_theme">
+
+        <attr name="selectedStepColor" format="color"/>
+        <attr name="selectedStepTitleColor" format="color"/>
+        <attr name="deselectedStepColor" format="color"/>
+        <attr name="stepsContainerBackground" format="color"/>
+        <attr name="titleFrameBackground" format="color"/>
+
+
+    </declare-styleable>
+
+</resources>

@@ -25,14 +25,18 @@ class TabItemView {
     private StepTabBkg imgIconBkg = null;
     private StepTabBkg barBkg = null;
     boolean isSelected = false;
+    int selectedStepBkgColor = 0;
+    int deselectedStepBkgColor = 0;
 
 
 // ____________________________________________________________________
 
-    public TabItemView(Context context, ViewGroup parent, boolean isFinishingPart) {
+    public TabItemView(Context context, ViewGroup parent, boolean isFinishingPart, int selectedStepBkgColor, int deselectedStepBkgColor) {
 
         this.context = context;
         this.isFinishingPart = isFinishingPart;
+        this.selectedStepBkgColor = selectedStepBkgColor;
+        this.deselectedStepBkgColor = deselectedStepBkgColor;
         createView(parent);
     }
 
@@ -48,7 +52,7 @@ class TabItemView {
 
     private void createView(ViewGroup parent) {
 
-        this.tabView = LayoutInflater.from(context).inflate(R.layout.tab_item_view, null, false);
+        this.tabView = LayoutInflater.from(context).inflate(R.layout.tab_item_view, parent,false);
         tabView.setOnClickListener(onTabClicked);
 
         tabView.measure(0, 0);
@@ -65,11 +69,11 @@ class TabItemView {
         //Setting icon image drawable
         Drawable imgIconSelectedDrawable = ContextCompat.getDrawable(context, R.drawable.tab_icon_selected_bkg);
         imgIconSelectedDrawable.mutate();
-        imgIconSelectedDrawable.setColorFilter(ContextCompat.getColor(context, R.color.selectedColor), PorterDuff.Mode.SRC_OVER);
+        imgIconSelectedDrawable.setColorFilter(selectedStepBkgColor, PorterDuff.Mode.SRC_OVER);
 
         Drawable imgIconUnselectedDrawable = ContextCompat.getDrawable(context, R.drawable.tab_icon_selected_bkg);
         imgIconUnselectedDrawable.mutate();
-        imgIconUnselectedDrawable.setColorFilter(ContextCompat.getColor(context, R.color.unselectedColor), PorterDuff.Mode.SRC_OVER);
+        imgIconUnselectedDrawable.setColorFilter(deselectedStepBkgColor, PorterDuff.Mode.SRC_OVER);
 
         imgIconBkg = new StepTabBkg(context, imgIconSelectedDrawable, imgIconUnselectedDrawable);
         img_icon.setBackground(imgIconBkg);
@@ -77,11 +81,11 @@ class TabItemView {
         //Setting bar view drawable
         Drawable barSelectedDrawable = ContextCompat.getDrawable(context, R.drawable.tab_bar_selected_bkg);
         barSelectedDrawable.mutate();
-        barSelectedDrawable.setColorFilter(ContextCompat.getColor(context, R.color.selectedColor), PorterDuff.Mode.SRC_OVER);
+        barSelectedDrawable.setColorFilter(selectedStepBkgColor, PorterDuff.Mode.SRC_OVER);
 
         Drawable barUnselectedDrawable = ContextCompat.getDrawable(context, R.drawable.tab_bar_selected_bkg);
         barUnselectedDrawable.mutate();
-        barUnselectedDrawable.setColorFilter(ContextCompat.getColor(context, R.color.unselectedColor), PorterDuff.Mode.SRC_OVER);
+        barUnselectedDrawable.setColorFilter(deselectedStepBkgColor, PorterDuff.Mode.SRC_OVER);
 
         barBkg = new StepTabBkg(context, barSelectedDrawable, barUnselectedDrawable);
         bar.setBackground(barBkg);

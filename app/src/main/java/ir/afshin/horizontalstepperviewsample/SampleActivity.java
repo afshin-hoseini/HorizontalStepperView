@@ -29,11 +29,11 @@ public class SampleActivity extends AppCompatActivity {
 
         titledHorizontalStepper = (TitledHorizontalStepper) findViewById(R.id.stepperView);
         horizontalStepper = titledHorizontalStepper.getStepper();
-        horizontalStepper.addTab(new TabItem("Item1", R.mipmap.ic_launcher));
+        horizontalStepper.addTab(new TabItem("Item1 with long data, very long data. Even longer.", R.mipmap.ic_launcher));
         horizontalStepper.addTab(new TabItem("Item2", R.mipmap.ic_launcher));
         horizontalStepper.addTab(new TabItem("Item3", R.mipmap.ic_launcher));
         horizontalStepper.addTab(new TabItem("Item4", R.mipmap.ic_launcher));
-        horizontalStepper.addTab(new TabItem("Item5", R.mipmap.ic_launcher));
+        horizontalStepper.addTab(new TabItem("Item5 with long data, very long data. Even longer.", R.mipmap.ic_launcher));
 
 
 //        handler.postDelayed(new Runnable() {

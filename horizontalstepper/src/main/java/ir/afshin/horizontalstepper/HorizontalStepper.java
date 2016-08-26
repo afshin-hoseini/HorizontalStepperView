@@ -2,10 +2,14 @@ package ir.afshin.horizontalstepper;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -26,6 +30,9 @@ public class HorizontalStepper extends HorizontalScrollView {
     private int currentSelectedStepIndex = -1;
     private TabItem currentTabItem = null;
     private StepSelectionChanged stepSelectionChangedListener = null;
+    private int selectedStepBackgroundColor = 0;
+    private int deselectedStepBackgroundColor = 0;
+    private boolean firstStepSelected = false;
 
 // ____________________________________________________________________
 
@@ -53,6 +60,14 @@ public class HorizontalStepper extends HorizontalScrollView {
 // ____________________________________________________________________
 
     private void init() {
+
+        int[] attrs = { R.attr.selectedStepColor, R.attr.deselectedStepColor};
+        TypedArray ta = getContext().obtainStyledAttributes(R.style.stepper, attrs);
+
+        deselectedStepBackgroundColor = ta.getColor(1, 0);
+        selectedStepBackgroundColor = ta.getColor(0,0);
+
+        ta.recycle();
 
         stepTabsContainer = new LinearLayout(getContext());
         LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -133,9 +148,10 @@ public class HorizontalStepper extends HorizontalScrollView {
 
     public void addTab(TabItem tabItem) {
 
-        tabItem.tabItemView = new TabItemView(getContext(), stepTabsContainer, false);
+        tabItem.tabItemView = new TabItemView(getContext(), stepTabsContainer, false, selectedStepBackgroundColor, deselectedStepBackgroundColor);
         tabItem.tabItemView.resize(minStepWidth_px);
         tabItem.tabItemView.setIcon(tabItem.iconDrawable);
+
         tabItems.add(tabItem);
         stepTabsContainer.addView(tabItem.tabItemView.getTabView());
 
@@ -161,7 +177,7 @@ public class HorizontalStepper extends HorizontalScrollView {
 
             if(finishingPart == null) {
                 finishingPart = new TabItem("", 0);
-                finishingPart.tabItemView = new TabItemView(getContext(), stepTabsContainer, true);
+                finishingPart.tabItemView = new TabItemView(getContext(), stepTabsContainer, true, selectedStepBackgroundColor, deselectedStepBackgroundColor);
             }
 
             if(tabItems.size() == 0)
@@ -187,23 +203,38 @@ public class HorizontalStepper extends HorizontalScrollView {
         if(currentTabItem == null) {
 
 
-            int fillSize = (finishingPart == null ? 1 : tabItems.contains(finishingPart) ? 2 : 1);
+            final int fillSize = (finishingPart == null ? 1 : tabItems.contains(finishingPart) ? 2 : 1);
             if(tabItems.size() >= fillSize) {
 
-                getHandler().postDelayed(new Runnable() {
+                currentTabItem = tabItems.get(0);
+                currentTabItem.tabItemView.select();
+
+
+                currentTabItem.tabItemView.getTabView().getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
                     @Override
-                    public void run() {
+                    public void onDraw() {
 
-                        currentTabItem = tabItems.get(0);
-                        currentTabItem.tabItemView.select();
+                        if(!firstStepSelected) {
 
-                        if(stepSelectionChangedListener != null)
-                            stepSelectionChangedListener.selectedStep(currentTabItem);
+                            firstStepSelected = true;
+
+                            getHandler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    Log.e("FIRST ITEM", "DRAW");
+                                    if(stepSelectionChangedListener != null)
+                                        stepSelectionChangedListener.selectedStep(currentTabItem);
+                                }
+                            }, 50);
+
+                        }
                     }
-                },200);
+                });
+
+
 
             }
-
         }
 
     }

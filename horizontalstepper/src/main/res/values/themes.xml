@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="sp_bottomButtonPanel">
+        <item name="android:background">#4caf50</item>
+        <item name="android:paddingTop">20dp</item>
+        <item name="android:paddingBottom">20dp</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+
+    <style name="sp_txtBtn">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="stepper">
+
+
+        <item name="selectedStepColor">#4caf50</item>
+        <item name="deselectedStepColor">#bdbdbd</item>
+        <item name="selectedStepTitleColor">#43a047</item>
+        <item name="stepsContainerBackground">#fafafa</item>
+        <item name="titleFrameBackground">#eeeeee</item>
+
+
+    </style>
+
+
+
+</resources>
