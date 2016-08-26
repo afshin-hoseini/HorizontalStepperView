@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 
 import java.util.Locale;
@@ -34,14 +35,6 @@ public class SampleActivity extends AppCompatActivity {
         horizontalStepper.addTab(new TabItem("Item3", R.mipmap.ic_launcher));
         horizontalStepper.addTab(new TabItem("Item4", R.mipmap.ic_launcher));
         horizontalStepper.addTab(new TabItem("Item5 with long data, very long data. Even longer.", R.mipmap.ic_launcher));
-
-
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                btnNextClicked(null);
-//            }
-//        }, 300);
 
     }
 

@@ -24,20 +24,27 @@
             style="@style/sp_txtBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnNext"
+            android:id="@+id/btnPrev"
             android:layout_weight="1"
-            android:gravity="start"
-            android:text="Next"/>
+            android:gravity="@integer/PrevBtnGravity"
+            android:text="Previous"/>
 
         <TextView
             style="@style/sp_txtBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/btnPrev"
-            android:gravity="end"
+            android:id="@+id/btnNext"
+            android:gravity="@integer/NextBtnGravity"
             android:layout_weight="1"
-            android:text="Previous"/>
+            android:text="Next"/>
 
     </LinearLayout>
+
+    <ir.afshin.horizontalstepper.CustomizedViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/stepper"
+        android:layout_above="@id/buttonPanel"
+        android:id="@+id/viewPager"/>
 
 </RelativeLayout>
