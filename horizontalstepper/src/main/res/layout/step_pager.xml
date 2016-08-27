@@ -27,7 +27,9 @@
             android:id="@+id/btnPrev"
             android:layout_weight="1"
             android:gravity="@integer/PrevBtnGravity"
-            android:text="Previous"/>
+            android:text="Previous"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
         <TextView
             style="@style/sp_txtBtn"
@@ -36,7 +38,9 @@
             android:id="@+id/btnNext"
             android:gravity="@integer/NextBtnGravity"
             android:layout_weight="1"
-            android:text="Next"/>
+            android:text="Next"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
     </LinearLayout>
 

@@ -3,8 +3,6 @@
 
     <style name="sp_bottomButtonPanel">
         <item name="android:background">#4caf50</item>
-        <item name="android:paddingTop">20dp</item>
-        <item name="android:paddingBottom">20dp</item>
         <item name="android:paddingLeft">10dp</item>
         <item name="android:paddingRight">10dp</item>
     </style>

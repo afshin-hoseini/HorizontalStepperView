@@ -85,8 +85,6 @@ public class ScaleAnimDrawable extends Drawable {
         float scaleY = animSide == AnimSide.width ? 1 : scale;
         canvas.scale(scaleX, scaleY, pivotX, pivotY);
 
-        Log.e("DRAW", "SCALE = " + scale + " - " + pivotX + ":"+ pivotY);
-
         drawable.draw(canvas);
 
         canvas.restoreToCount(saveCount);

@@ -28,16 +28,16 @@ public class PagerSample extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        makeRtl();
+        //makeRtl();
         setContentView(R.layout.activity_pager);
 
         TabItem[] steps = {
 
-            new TabItem("Item1", R.mipmap.ic_launcher),
-            new TabItem("Item2", R.mipmap.ic_launcher),
-            new TabItem("Item3", R.mipmap.ic_launcher),
-            new TabItem("Item4", R.mipmap.ic_launcher),
-            new TabItem("Item5", R.mipmap.ic_launcher)
+            new TabItem("Item1werty", R.mipmap.ic_launcher),
+            new TabItem("Item", R.mipmap.ic_launcher),
+            new TabItem("Item3655", R.mipmap.ic_launcher),
+            new TabItem("Ite", R.mipmap.ic_launcher),
+            new TabItem("Item58866", R.mipmap.ic_launcher)
 
         };
 

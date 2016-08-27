@@ -9,10 +9,12 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,7 +27,7 @@ public class TitledHorizontalStepper extends LinearLayout {
     private View contentView = null;
     private HorizontalStepper horizontalStepper = null;
     private TextView txt_title = null;
-    private FrameLayout titleFrame = null;
+    private AbsoluteLayout titleFrame = null;
     private TranslateAnimation txtTitle_translateAnimation =  null;
     private float pendingTitlePosFrom = 0;
     private float pendingTitlePosTo = 0;
@@ -34,6 +36,7 @@ public class TitledHorizontalStepper extends LinearLayout {
     private int txtTitleColor = 0;
     private int titleFrameColor = 0;
     private int backgroundColor = 0;
+    private boolean isTitlePositionConfiged = false;
 
 // ____________________________________________________________________
 
@@ -76,13 +79,27 @@ public class TitledHorizontalStepper extends LinearLayout {
 
         horizontalStepper = (HorizontalStepper) contentView.findViewById(R.id.horizontalStepper);
         txt_title = (TextView) contentView.findViewById(R.id.stepTitle);
-        titleFrame = (FrameLayout) contentView.findViewById(R.id.titleFrame);
+        titleFrame = (AbsoluteLayout) contentView.findViewById(R.id.titleFrame);
 
         horizontalStepper.setStepSelectionChangedListener(stepSelectionChangedListener);
 
         setBackgroundColor(backgroundColor);
         txt_title.setTextColor(txtTitleColor);
         titleFrame.setBackgroundColor(titleFrameColor);
+
+        titleFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                if(!isTitlePositionConfiged) {
+
+                    isTitlePositionConfiged = true;
+                    if (getContext().getResources().getConfiguration().getLayoutDirection() == LAYOUT_DIRECTION_RTL)
+                        ((AbsoluteLayout.LayoutParams) txt_title.getLayoutParams()).x = titleFrame.getWidth();
+                }
+
+            }
+        });
 
     }
 // ____________________________________________________________________
@@ -132,6 +149,9 @@ public class TitledHorizontalStepper extends LinearLayout {
         if(nextTitle_xPosition + nextTitleWidth > getLeft()+wholeWidth)
             nextTitle_xPosition -= (nextTitle_xPosition + nextTitleWidth) - (getLeft()+wholeWidth);
 
+
+        txtTitle_translateAnimation = new TranslateAnimation((txt_title.getWidth() - nextTitleWidth), nextTitle_xPosition - txt_title.getX(), 0, 0);
+
         //txt_title.setX(nextTitle_xPosition);
         txt_title.setText(tabItem.label);
         txt_title.setVisibility(VISIBLE);
@@ -139,7 +159,7 @@ public class TitledHorizontalStepper extends LinearLayout {
         pendingTitlePosFrom = txt_title.getX();
         pendingTitlePosTo = nextTitle_xPosition;
 
-        txtTitle_translateAnimation = new TranslateAnimation(0, nextTitle_xPosition - txt_title.getX(), 0, 0);
+
         txtTitle_translateAnimation.setDuration(300);
         txtTitle_translateAnimation.setFillEnabled(true);
         txtTitle_translateAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -151,9 +171,13 @@ public class TitledHorizontalStepper extends LinearLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
 
-
                 txtTitle_translateAnimation = null;
                 txt_title.setX(pendingTitlePosTo);
+
+//                AbsoluteLayout.LayoutParams params = (AbsoluteLayout.LayoutParams) txt_title.getLayoutParams();
+//                params.x = (int) pendingTitlePosTo;
+//                txt_title.setLayoutParams(params);
+//                txt_title.requestLayout();
             }
 
             @Override
