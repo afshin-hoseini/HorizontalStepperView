@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Stepper -->
+    <ir.afshin.horizontalstepper.TitledHorizontalStepper
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/stepper"
+        android:layout_alignParentTop="true"/>
+
+    <!-- Bottom buttons -->
+    <LinearLayout
+        style="@style/sp_bottomButtonPanel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/buttonPanel"
+        android:weightSum="2"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            style="@style/sp_txtBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnPrev"
+            android:layout_weight="1"
+            android:gravity="@integer/PrevBtnGravity"
+            android:text="Previous"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
+
+        <TextView
+            style="@style/sp_txtBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnNext"
+            android:gravity="@integer/NextBtnGravity"
+            android:layout_weight="1"
+            android:text="Next"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
+
+    </LinearLayout>
+
+    <ir.afshin.horizontalstepper.CustomizedViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/stepper"
+        android:layout_above="@id/buttonPanel"
+        android:id="@+id/viewPager"/>
+
+</RelativeLayout>
