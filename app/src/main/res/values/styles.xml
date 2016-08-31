@@ -8,4 +8,23 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+    <style name="stepper">
+
+        <item name="selectedStepColor">#4caf50</item>
+        <item name="deselectedStepColor">#bdbdbd</item>
+        <item name="selectedStepTitleColor">#43a047</item>
+        <item name="stepsContainerBackground">#fafafa</item>
+        <item name="titleFrameBackground">#eeeeee</item>
+
+        <item name="nextBtnTitle">@string/nextBtnTitle</item>
+        <item name="prevBtnTitle">@string/prevBtnTitle</item>
+        <item name="finishBtnTitle">@string/finishBtnTitle</item>
+
+        <item name="finishBtnIcon">@drawable/ic_check_white_24dp</item>
+        <item name="nextBtnIcon">@drawable/ic_chevron_right_white_24dp</item>
+        <item name="prevBtnIcon">@drawable/ic_chevron_left_white_24dp</item>
+
+    </style>
+
 </resources>
