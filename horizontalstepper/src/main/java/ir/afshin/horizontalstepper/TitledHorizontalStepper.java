@@ -2,14 +2,19 @@ package ir.afshin.horizontalstepper;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.res.TypedArray;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AlphaAnimation;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Transformation;
 import android.view.animation.TranslateAnimation;
+import android.widget.AbsoluteLayout;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,9 +27,16 @@ public class TitledHorizontalStepper extends LinearLayout {
     private View contentView = null;
     private HorizontalStepper horizontalStepper = null;
     private TextView txt_title = null;
-    private FrameLayout titleFrame = null;
+    private AbsoluteLayout titleFrame = null;
     private TranslateAnimation txtTitle_translateAnimation =  null;
+    private float pendingTitlePosFrom = 0;
+    private float pendingTitlePosTo = 0;
+    private TabItem currentTabItem = null;
 
+    private int txtTitleColor = 0;
+    private int titleFrameColor = 0;
+    private int backgroundColor = 0;
+    private boolean isTitlePositionConfiged = false;
 
 // ____________________________________________________________________
 
@@ -53,14 +65,41 @@ public class TitledHorizontalStepper extends LinearLayout {
 
     private void init() {
 
+        int[] attrs = {R.attr.selectedStepTitleColor, R.attr.stepsContainerBackground, R.attr.titleFrameBackground};
+        TypedArray ta = getContext().obtainStyledAttributes(R.style.stepper, attrs);
+
+        txtTitleColor = ta.getColor(0, 0);
+        backgroundColor = ta.getColor(1,0);
+        titleFrameColor = ta.getColor(2,0);
+
+        ta.recycle();
+
         contentView  = LayoutInflater.from(getContext()).inflate(R.layout.titled_horizontal_stepper, this, false);
         addView(contentView);
 
         horizontalStepper = (HorizontalStepper) contentView.findViewById(R.id.horizontalStepper);
         txt_title = (TextView) contentView.findViewById(R.id.stepTitle);
-        titleFrame = (FrameLayout) contentView.findViewById(R.id.titleFrame);
+        titleFrame = (AbsoluteLayout) contentView.findViewById(R.id.titleFrame);
 
         horizontalStepper.setStepSelectionChangedListener(stepSelectionChangedListener);
+
+        setBackgroundColor(backgroundColor);
+        txt_title.setTextColor(txtTitleColor);
+        titleFrame.setBackgroundColor(titleFrameColor);
+
+        titleFrame.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+
+                if(!isTitlePositionConfiged) {
+
+                    isTitlePositionConfiged = true;
+                    if (getContext().getResources().getConfiguration().getLayoutDirection() == LAYOUT_DIRECTION_RTL)
+                        ((AbsoluteLayout.LayoutParams) txt_title.getLayoutParams()).x = titleFrame.getWidth();
+                }
+
+            }
+        });
 
     }
 // ____________________________________________________________________
@@ -74,6 +113,26 @@ public class TitledHorizontalStepper extends LinearLayout {
 
     private void animateTitleTo(final TabItem tabItem) {
 
+        Log.e("ANIMATION", "TAB ITEM");
+
+
+        if(txtTitle_translateAnimation != null) {
+
+            Transformation transformation = new Transformation();
+            txtTitle_translateAnimation.getTransformation(AnimationUtils.currentAnimationTimeMillis(), transformation);
+
+            float[] matrix = new float[9];
+            transformation.getMatrix().getValues(matrix);
+            float xTrans = matrix[Matrix.MTRANS_X];
+
+            txt_title.setX(pendingTitlePosFrom + xTrans);
+
+            txtTitle_translateAnimation.setAnimationListener(null);
+            txtTitle_translateAnimation.cancel();
+
+        }
+
+
         Paint titlePaint = new Paint();
         titlePaint.setTypeface(txt_title.getTypeface());
         titlePaint.setTextSize(txt_title.getTextSize());
@@ -82,15 +141,25 @@ public class TitledHorizontalStepper extends LinearLayout {
         float wholeWidth = titleFrame.getWidth();
 
         float tabCenterHorizontalPos = tabItem.tabItemView.getIconHorizontalCenter();
-        final float nextTitle_xPosition = tabCenterHorizontalPos - (nextTitleWidth/2);
+        float nextTitle_xPosition = tabCenterHorizontalPos - (nextTitleWidth/2);
+
+        if(nextTitle_xPosition < 0)
+            nextTitle_xPosition = 0;
+
+        if(nextTitle_xPosition + nextTitleWidth > getLeft()+wholeWidth)
+            nextTitle_xPosition -= (nextTitle_xPosition + nextTitleWidth) - (getLeft()+wholeWidth);
+
+
+        txtTitle_translateAnimation = new TranslateAnimation((txt_title.getWidth() - nextTitleWidth), nextTitle_xPosition - txt_title.getX(), 0, 0);
 
         //txt_title.setX(nextTitle_xPosition);
         txt_title.setText(tabItem.label);
+        txt_title.setVisibility(VISIBLE);
 
-        if(txtTitle_translateAnimation != null)
-            txtTitle_translateAnimation.cancel();
+        pendingTitlePosFrom = txt_title.getX();
+        pendingTitlePosTo = nextTitle_xPosition;
 
-        txtTitle_translateAnimation = new TranslateAnimation(0, nextTitle_xPosition - txt_title.getX(), 0, 0);
+
         txtTitle_translateAnimation.setDuration(300);
         txtTitle_translateAnimation.setFillEnabled(true);
         txtTitle_translateAnimation.setAnimationListener(new Animation.AnimationListener() {
@@ -102,7 +171,13 @@ public class TitledHorizontalStepper extends LinearLayout {
             @Override
             public void onAnimationEnd(Animation animation) {
 
-                txt_title.setX(nextTitle_xPosition);
+                txtTitle_translateAnimation = null;
+                txt_title.setX(pendingTitlePosTo);
+
+//                AbsoluteLayout.LayoutParams params = (AbsoluteLayout.LayoutParams) txt_title.getLayoutParams();
+//                params.x = (int) pendingTitlePosTo;
+//                txt_title.setLayoutParams(params);
+//                txt_title.requestLayout();
             }
 
             @Override
@@ -120,14 +195,14 @@ public class TitledHorizontalStepper extends LinearLayout {
 
     public void nextStep() {
 
-        TabItem currentTabItem = horizontalStepper.nextStep();
+        currentTabItem = horizontalStepper.nextStep();
     }
 
 // ____________________________________________________________________
 
     public void previousStep() {
 
-        TabItem currentTabItem = horizontalStepper.previousStep();
+        currentTabItem = horizontalStepper.previousStep();
     }
 
 // ____________________________________________________________________
@@ -136,7 +211,12 @@ public class TitledHorizontalStepper extends LinearLayout {
         @Override
         public void selectedStep(TabItem tabItem) {
 
-            animateTitleTo(tabItem);
+
+            if(currentTabItem != tabItem) {
+
+                currentTabItem = tabItem;
+                animateTitleTo(tabItem);
+            }
         }
     };
 

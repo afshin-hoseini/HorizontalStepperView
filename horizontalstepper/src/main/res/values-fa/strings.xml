@@ -1,0 +1,7 @@
+<resources>
+
+    <string name="nextBtnTitle">ادامه</string>
+    <string name="prevBtnTitle">برگشت</string>
+    <string name="finishBtnTitle">تایید</string>
+
+</resources>

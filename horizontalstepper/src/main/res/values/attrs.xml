@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="hs_theme">
+
+        <attr name="selectedStepColor" format="color"/>
+        <attr name="selectedStepTitleColor" format="color"/>
+        <attr name="deselectedStepColor" format="color"/>
+        <attr name="stepsContainerBackground" format="color"/>
+        <attr name="titleFrameBackground" format="color"/>
+        <attr name="nextBtnTitle" format="string|reference"/>
+        <attr name="prevBtnTitle" format="string|reference"/>
+        <attr name="finishBtnTitle" format="string|reference"/>
+        <attr name="nextBtnIcon" format="reference"/>
+        <attr name="prevBtnIcon" format="reference"/>
+        <attr name="finishBtnIcon" format="reference"/>
+
+
+    </declare-styleable>
+
+</resources>
