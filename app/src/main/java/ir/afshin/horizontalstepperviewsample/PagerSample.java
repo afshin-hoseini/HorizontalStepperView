@@ -1,7 +1,9 @@
 package ir.afshin.horizontalstepperviewsample;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +28,11 @@ public class PagerSample extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
 
         //makeRtl();
+
         setContentView(R.layout.activity_pager);
 
         TabItem[] steps = {
@@ -87,6 +91,17 @@ public class PagerSample extends Activity {
         Configuration configuration = getResources().getConfiguration();
         configuration.setLayoutDirection(new Locale("fa"));
         getResources().updateConfiguration(configuration, getResources().getDisplayMetrics());
+
+        Locale locale = new Locale("fa");
+        Locale.setDefault(locale);
+
+        Resources resources = getResources();
+
+        configuration = resources.getConfiguration();
+        configuration.locale = locale;
+
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
+
     }
 // ____________________________________________________________________
 
