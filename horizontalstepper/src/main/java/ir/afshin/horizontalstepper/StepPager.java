@@ -3,7 +3,10 @@ package ir.afshin.horizontalstepper;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
+import android.support.v4.content.res.TypedArrayUtils;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -35,6 +38,17 @@ public class StepPager extends RelativeLayout {
     private Handler handler = new Handler();
     private int currentStep = 0;
 
+    private String nextBtnTitle = "";
+    private String prevBtnTitle = "";
+    private String finishBtnTitle = "";
+
+    private Drawable nextBtnIcon = null;
+    private Drawable prevBtnIcon = null;
+    private Drawable finishBtnIcon = null;
+
+    private int themeResId = R.style.stepper;
+
+
 // ____________________________________________________________________
 
 //region constructors
@@ -60,6 +74,7 @@ public class StepPager extends RelativeLayout {
 
     public void init(TabItem[] steps, Adapter adapter) {
 
+        adjustTheme();
 
         Configuration configuration = getContext().getResources().getConfiguration();
         isRtl = configuration.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
@@ -98,6 +113,28 @@ public class StepPager extends RelativeLayout {
         btnNext.setOnClickListener(onBtnNextClicked);
         btnPrev.setOnClickListener(onBtnPreviousClicked);
 
+        adjustButtons();
+        adapter.enteredStep(steps[0], 0);
+
+    }
+
+// ____________________________________________________________________
+
+    private void adjustTheme() {
+
+        int[] attrs = {R.attr.nextBtnTitle, R.attr.prevBtnTitle, R.attr.finishBtnTitle,
+                R.attr.nextBtnIcon, R.attr.prevBtnIcon, R.attr.finishBtnIcon};
+        TypedArray ta = getContext().obtainStyledAttributes(R.style.stepper, attrs);
+
+        nextBtnTitle = TypedArrayUtils.getString(ta, 0, 0);
+        prevBtnTitle = TypedArrayUtils.getString(ta, 1, 0);
+        finishBtnTitle = TypedArrayUtils.getString(ta, 2, 0);
+
+        nextBtnIcon = TypedArrayUtils.getDrawable(ta, 3, 0);
+        prevBtnIcon = TypedArrayUtils.getDrawable(ta, 4, 0);
+        finishBtnIcon = TypedArrayUtils.getDrawable(ta, 5, 0);
+
+        ta.recycle();
     }
 
 // ____________________________________________________________________
@@ -109,6 +146,41 @@ public class StepPager extends RelativeLayout {
                 return  i;
 
         return -1;
+    }
+
+// ____________________________________________________________________
+
+    private void adjustButtons() {
+
+
+        if(currentStep == steps.length -1) {
+            btnNext.setText(finishBtnTitle);
+            if(isRtl)
+                btnNext.setCompoundDrawablesWithIntrinsicBounds(finishBtnIcon, null, null, null);
+            else
+                btnNext.setCompoundDrawablesWithIntrinsicBounds(null, null, finishBtnIcon, null);
+        }
+        else {
+
+            btnNext.setText(nextBtnTitle);
+            if(isRtl)
+                btnNext.setCompoundDrawablesWithIntrinsicBounds(prevBtnIcon, null, null, null);
+            else
+                btnNext.setCompoundDrawablesWithIntrinsicBounds(null, null, nextBtnIcon, null);
+
+        }
+
+        if(currentStep <= 0)
+            btnPrev.setVisibility(INVISIBLE);
+        else
+            btnPrev.setVisibility(VISIBLE);
+
+        if(isRtl)
+            btnPrev.setCompoundDrawablesWithIntrinsicBounds(null, null, nextBtnIcon, null);
+        else
+            btnPrev.setCompoundDrawablesWithIntrinsicBounds(prevBtnIcon, null, null, null);
+
+        btnPrev.setText(prevBtnTitle);
     }
 
 // ____________________________________________________________________
@@ -130,8 +202,12 @@ public class StepPager extends RelativeLayout {
 
                 if(isRtl)
                     viewPager.setCurrentItem(steps.length - 1 - currentStep);
+                else
+                    viewPager.setCurrentItem(currentStep);
 
                 adapter.enteredStep(steps[currentStep], currentStep);
+
+                adjustButtons();
             }
         }
     };
@@ -149,7 +225,12 @@ public class StepPager extends RelativeLayout {
 
                 if(isRtl)
                     viewPager.setCurrentItem(steps.length - 1 - currentStep);
+                else
+                    viewPager.setCurrentItem(currentStep);
+
                 adapter.enteredStep(steps[currentStep], currentStep);
+
+                adjustButtons();
             }
         }
     };
@@ -174,7 +255,17 @@ public class StepPager extends RelativeLayout {
                 position = steps.length - 1 - position;
 
             View view = adapter.getViewFor(container, steps[position], position);
-            container.addView(view);
+
+            ViewGroup pageParent = ((ViewGroup) view.getParent());
+
+            if(pageParent != container) {
+
+                if(pageParent != null)
+                    pageParent.removeView(view);
+
+                container.addView(view);
+            }
+
             return view;
         }
 
